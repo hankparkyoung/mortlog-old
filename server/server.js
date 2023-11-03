@@ -1,8 +1,13 @@
 import express from 'express';
+import dotenv from 'dotenv';
 import { createConnection } from 'mysql';
 import bodyParser from 'body-parser';
+
+dotenv.config();
+
 const app = express();
 const port = process.env.PORT || 3000;
+
 
 app.use(bodyParser.json());
 
@@ -11,10 +16,10 @@ app.listen(port, () => {
 });
 
 const connection = createConnection({
-  host: 'localhost',
-  user: 'hankpark',
-  password: 'hankpark',
-  database: 'mortlog'
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
 });
 
 connection.connect((error) => {
@@ -35,6 +40,19 @@ app.get('/units', (req, res) => {
     }
   });
 });
+
+// not sure if we ever require to fetch a single unit by ID
+// app.get('/units/:unitId', (req, res) => {
+//   const { unitId } = req.params;
+//   connection.query(`SELECT * FROM units WHERE id = ${unitId}`, (error, data) =>  {
+//     if (error) {
+//       console.error(error);
+//       res.status(500).send('Error retrieving unit');
+//     } else {
+//       res.send(data);
+//     }
+//   });
+// });
 
 app.post('/units', (req, res) => {
   const { name, cost } = req.body;
