@@ -31,7 +31,9 @@ connection.connect((error) => {
 });
 
 app.get('/units', (req, res) => {
-  connection.query('SELECT * FROM units', (error, data) => {
+  const sql = 'SELECT * FROM units';
+
+  connection.query(sql, (error, data) => {
     if (error) {
       console.error(error);
       res.status(500).send('Error retrieving units');
@@ -41,22 +43,11 @@ app.get('/units', (req, res) => {
   });
 });
 
-// not sure if we ever require to fetch a single unit by ID
-// app.get('/units/:unitId', (req, res) => {
-//   const { unitId } = req.params;
-//   connection.query(`SELECT * FROM units WHERE id = ${unitId}`, (error, data) =>  {
-//     if (error) {
-//       console.error(error);
-//       res.status(500).send('Error retrieving unit');
-//     } else {
-//       res.send(data);
-//     }
-//   });
-// });
-
 app.post('/units', (req, res) => {
   const { name, cost } = req.body;
-  connection.query('INSERT INTO units (name, cost) VALUES (?, ?)', [name, cost], (error) => {
+  const sql = 'INSERT INTO units (name, cost) VALUES (?, ?)';
+
+  connection.query(sql, [name, cost], (error) => {
     if (error) {
       console.error(error);
       res.status(500).send('Error creating unit');
