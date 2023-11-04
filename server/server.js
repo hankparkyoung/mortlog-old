@@ -65,3 +65,17 @@ app.post('/units', (req, res) => {
     }
   });
 });
+
+app.put('/units/:unitId', (req, res) => {
+  const { unitId } = req.params;
+  const { name, cost } = req.body;
+  const sql = 'UPDATE units SET name = ?, cost = ? WHERE id = ?';
+  connection.query(sql, [name, cost, unitId], (error) => {
+      if (error) {
+        console.error(error);
+        res.status(500).send('Error updating unit');
+      } else {
+        res.send('Unit was updated successfully');
+      }
+    });
+});
