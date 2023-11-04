@@ -70,12 +70,31 @@ app.put('/units/:unitId', (req, res) => {
   const { unitId } = req.params;
   const { name, cost } = req.body;
   const sql = 'UPDATE units SET name = ?, cost = ? WHERE id = ?';
+
   connection.query(sql, [name, cost, unitId], (error) => {
-      if (error) {
-        console.error(error);
-        res.status(500).send('Error updating unit');
-      } else {
-        res.send('Unit was updated successfully');
-      }
-    });
+    if (error) {
+      console.error(error);
+      res.status(500).send('Error updating unit');
+    } else {
+      res.send('Unit was updated successfully');
+    }
+  });
 });
+
+app.delete('/units/:unitId', (req, res) => {
+  const { unitId } = req.params;
+  const sql = 'DELETE from units WHERE id = ?';
+
+  connection.query(sql, [unitId], (error, data) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send('Error deleting unit');
+    } else {
+      if (data.affectedRows > 0) {
+        res.send('Unit was deleted successfully');
+      } else {
+        res.status(404).send('Unit not found');
+      }
+    }
+  });
+})
